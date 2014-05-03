@@ -1,21 +1,34 @@
 package org.tihlde.server;
 
-import org.tihlde.DTO.Transaction;
+import org.tihlde.service.BrokerImp;
 
+import java.net.UnknownHostException;
 import java.rmi.Remote;
-import java.util.ArrayList;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 /**
- * Created by kanin on 03.05.14.
+ * Created by kanin on 04.05.14.
  */
-public interface Server extends Remote {
+public class Server {
+    public static void main(String[] args) throws Exception {
 
-    boolean ask();
-    Transaction rollback();
-    boolean checkVersion();
-    ArrayList<Transaction> getAll();
-    Transaction getById(int id);
-    Transaction makeTransaction(double amount);
+        final Registry registry = LocateRegistry.createRegistry(12000);
+        BrokerImp broker = new BrokerImp();
 
 
+        try {
+            registry.bind("Bank", broker);
+        } catch (Exception e) {
+            System.out.println("Server failed to initialize");
+            System.exit(0);
+        }
+        System.out.println("Server running...");
+
+        while(true) {
+
+
+
+        }
+    }
 }
