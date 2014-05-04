@@ -51,6 +51,7 @@ public class RegisterImp extends UnicastRemoteObject implements Register {
     @Override
     public Transaction makeTransaction(Transaction transaction)  {
         bank.add(transaction);
+        System.out.println("Transaction done.");
         return transaction;
     }
 }

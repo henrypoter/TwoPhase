@@ -4,7 +4,6 @@ import org.tihlde.DB.RegisterImp;
 import org.tihlde.service.Broker;
 
 import java.net.InetAddress;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
@@ -16,9 +15,10 @@ import java.rmi.registry.Registry;
     Run two or more to get the Two Phase Commit effect.
  */
 
-public class Client {
+public class Client extends Thread {
 
-    public static void main(String[] args) throws Exception {
+    @Override
+    public void run() {
         try {
             String serverAddress = InetAddress.getLocalHost().toString();
             Registry registry = LocateRegistry.getRegistry(12000);
@@ -27,7 +27,7 @@ public class Client {
             System.out.println("Lookup on server: " + broker.getServerName() + " OK");
             broker.addRegistry(new RegisterImp());
             System.out.println("Connected");
-        } catch (RemoteException re) {
+        } catch (Exception re) {
             re.printStackTrace();
             System.out.println("Register failed to connect");
         }
