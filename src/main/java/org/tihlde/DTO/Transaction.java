@@ -1,9 +1,11 @@
 package org.tihlde.DTO;
 
+import java.io.Serializable;
+
 /**
  * Created by kanin on 03.05.14.
  */
-public class Transaction {
+public class Transaction implements Serializable {
 
     private int id;
     private int version;

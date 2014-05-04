@@ -1,6 +1,6 @@
 package org.tihlde;
 
-import org.tihlde.DB.Register;
+import org.tihlde.DB.RegisterImp;
 import org.tihlde.service.Broker;
 
 import java.net.InetAddress;
@@ -22,8 +22,10 @@ public class Client {
         try {
             String serverAddress = InetAddress.getLocalHost().toString();
             Registry registry = LocateRegistry.getRegistry(12000);
+            System.out.println("Locate OK");
             Broker broker = (Broker) registry.lookup("Bank");
-            broker.addRegistry(new Register());
+            System.out.println("Lookup on server: " + broker.getServerName() + " OK");
+            broker.addRegistry(new RegisterImp());
             System.out.println("Connected");
         } catch (RemoteException re) {
             re.printStackTrace();

@@ -20,12 +20,9 @@ public class BrokerImp extends UnicastRemoteObject implements Broker {
         this.serverName = serverName;
     }
 
+    @Override
     public String getServerName() {
         return serverName;
-    }
-
-    public void setServerName(String serverName) {
-        this.serverName = serverName;
     }
 
     @Override
@@ -37,7 +34,7 @@ public class BrokerImp extends UnicastRemoteObject implements Broker {
     public ArrayList<Register> getRegisters() throws RemoteException {
         return registers;
     }
-/*
+
     @Override
     public void makeTransaction(Transaction transaction) throws NoTransactionFoundException, RemoteException {
 
@@ -68,5 +65,5 @@ public class BrokerImp extends UnicastRemoteObject implements Broker {
         for (Register r : registers) {
             r.rollback(transaction);
         }
-    }*/
+    }
 }

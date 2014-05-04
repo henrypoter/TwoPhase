@@ -2,59 +2,21 @@ package org.tihlde.DB;
 
 import org.tihlde.DTO.Transaction;
 import org.tihlde.Exceptions.NoTransactionFoundException;
-import org.tihlde.service.Broker;
 
-import java.net.InetAddress;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 /**
- * Created by kanin on 04.05.14.
+ * Created by kanin on 03.05.14.
  */
+public interface Register extends Remote {
 
-public class Register extends UnicastRemoteObject implements RegistryInterface  {
+    boolean ask() throws RemoteException;
+    void rollback(Transaction transaction) throws RemoteException;
+    int checkVersion() throws RemoteException;
+    ArrayList<Transaction> getAll() throws RemoteException;
+    Transaction getById(int id) throws NoTransactionFoundException, RemoteException;
+    Transaction makeTransaction(Transaction transaction) throws RemoteException;
 
-    ArrayList<Transaction> bank = new ArrayList<Transaction>();
-
-    public Register() throws RemoteException {
-    }
-
-    @Override
-    public boolean ask() {
-        return true;
-    }
-
-    @Override
-    public void rollback(Transaction transaction)  {
-        bank.remove(transaction);
-    }
-
-    @Override
-    public int checkVersion() throws RemoteException {
-        return bank.get(bank.size()).getId() ;
-    }
-
-    @Override
-    public ArrayList<Transaction> getAll() {
-        return bank;
-    }
-
-    @Override
-    public Transaction getById(int id) throws NoTransactionFoundException {
-        for (Transaction t : bank) {
-            if (t.getId() == id) {
-                return t;
-            }
-        }
-        throw new NoTransactionFoundException();
-    }
-
-    @Override
-    public Transaction makeTransaction(Transaction transaction)  {
-        bank.add(transaction);
-        return transaction;
-    }
 }
