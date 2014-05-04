@@ -57,16 +57,4 @@ public class Register extends UnicastRemoteObject implements RegistryInterface  
         bank.add(transaction);
         return transaction;
     }
-
-   public static void main(String[] args) throws Exception {
-        try {
-            String serverAddress = InetAddress.getLocalHost().toString();
-            Registry registry = LocateRegistry.getRegistry(12000);
-            Broker broker = (Broker) registry.lookup("Bank");
-            broker.addRegistry(new Register());
-            System.out.println("Connected");
-        } catch (RemoteException re) {
-            re.printStackTrace();
-        }
-    }
 }
