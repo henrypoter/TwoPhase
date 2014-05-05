@@ -13,7 +13,7 @@ public class ServerInit extends Thread {
         try {
             final Registry registry = LocateRegistry.createRegistry(11000);
             BrokerImp broker = new BrokerImp("Bank");
-            registry.bind(broker.getServerName(), broker);
+            registry.rebind(broker.getServerName(), broker);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("ServerInit failed to initialize");

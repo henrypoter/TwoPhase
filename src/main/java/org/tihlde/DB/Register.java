@@ -17,8 +17,7 @@ public interface Register extends Remote {
     void rollback(Transaction transaction) throws RemoteException;
     ArrayList<Transaction> getAll() throws RemoteException;
     Transaction getById(int id) throws NoTransactionFoundException, RemoteException;
-    Transaction makeTransaction(Transaction transaction) throws RemoteException;
-    Transaction makeFailedTransaction(Transaction transaction) throws TransactionFailedException;
-    Transaction getTransaction(int id) throws NoTransactionFoundException;
-    double getBalance();
+    Transaction makeTransaction(Transaction transaction) throws RemoteException, TransactionFailedException;
+    Transaction getTransaction(int id) throws RemoteException, NoTransactionFoundException;
+    double getBalance() throws RemoteException;
 }

@@ -1,6 +1,7 @@
 package org.tihlde.DB;
 
 import org.tihlde.DTO.Transaction;
+import org.tihlde.Exceptions.NoTransactionFoundException;
 import org.tihlde.Exceptions.TransactionFailedException;
 
 import java.rmi.RemoteException;
@@ -14,17 +15,25 @@ import java.util.ArrayList;
 public class RegisterImp extends UnicastRemoteObject implements Register {
 
     ArrayList<Transaction> bank = new ArrayList<Transaction>();
+    Transaction prevTransaction = null;
+    boolean failing;
+    boolean poll;
+    int nodeId;
 
-    public RegisterImp() throws RemoteException {
+    public RegisterImp(int id, boolean failing, boolean poll) throws RemoteException {
+        this.failing = failing;
+        this.poll = poll;
+        this.nodeId = id;
     }
 
     @Override
     public boolean ask() {
-        return true;
+        return poll;
     }
 
     @Override
     public void rollback(Transaction transaction)  {
+        System.out.println("Rollback done.");
         bank.remove(transaction);
     }
 
@@ -44,25 +53,33 @@ public class RegisterImp extends UnicastRemoteObject implements Register {
     }
 
     @Override
-    public Transaction makeTransaction(Transaction transaction)  {
+    public Transaction makeTransaction(Transaction transaction) throws TransactionFailedException {
+        // Failing trasaction for testing.
+        if(failing) {
+            throw new TransactionFailedException("Transaction failed in node " + nodeId);
+        }
+        double newBalance;
+        if (prevTransaction != null) {
+            newBalance = prevTransaction.getBalance() + transaction.getAmount();
+            transaction.setBalance(newBalance);
+        } else {
+            transaction.setBalance(transaction.getAmount());
+        }
+
         bank.add(transaction);
+        prevTransaction = transaction;
         System.out.println("Transaction done.");
         return transaction;
     }
 
     @Override
-    public Transaction makeFailedTransaction(Transaction transaction) throws TransactionFailedException {
-        return null;
-    }
-
-    @Override
-    public Transaction getTransaction(int id) {
+    public Transaction getTransaction(int id) throws NoTransactionFoundException {
         for(Transaction t : bank) {
-            if(t.getId() == t.getId()) {
+            if(t.getId() == id) {
                 return t;
             }
         }
-        return null;
+        throw new NoTransactionFoundException();
     }
 
     @Override

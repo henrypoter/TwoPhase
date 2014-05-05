@@ -3,6 +3,8 @@ package org.tihlde.service;
 import org.tihlde.DB.Register;
 import org.tihlde.DTO.Transaction;
 import org.tihlde.Exceptions.NoTransactionFoundException;
+import org.tihlde.Exceptions.PollingFailException;
+import org.tihlde.Exceptions.TransactionFailedException;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -16,9 +18,7 @@ public interface Broker extends Remote {
 
     void addRegistry(Register register) throws RemoteException;
 
-    void makeTransaction(Transaction transaction) throws NoTransactionFoundException, RemoteException;
-
-    void makeFailedTransaction(Transaction transaction) throws NoTransactionFoundException, RemoteException;
+    void makeTransaction(Transaction transaction) throws NoTransactionFoundException, RemoteException, TransactionFailedException, PollingFailException;
 
     void rollback(Transaction transaction) throws RemoteException;
 

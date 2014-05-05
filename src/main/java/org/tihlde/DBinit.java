@@ -16,6 +16,15 @@ import java.rmi.registry.Registry;
  */
 
 public class DBinit extends Thread {
+    boolean failingTransfer;
+    boolean poll;
+    int id;
+
+    public DBinit(int id, boolean failingTransfer, boolean poll) {
+        this.failingTransfer = failingTransfer;
+        this.poll = poll;
+        this.id = id;
+    }
 
     @Override
     public void run() {
@@ -24,7 +33,7 @@ public class DBinit extends Thread {
             Registry registry = LocateRegistry.getRegistry(11000);
             Broker broker = (Broker) registry.lookup("Bank");
             System.out.println("Lookup on server: " + broker.getServerName() + " OK");
-            broker.addRegistry(new RegisterImp());
+            broker.addRegistry(new RegisterImp(id, failingTransfer, poll));
             System.out.println("Connected");
         } catch (Exception re) {
             re.printStackTrace();

@@ -3,6 +3,8 @@ package org.tihlde.service;
 import org.tihlde.DB.Register;
 import org.tihlde.DTO.Transaction;
 import org.tihlde.Exceptions.NoTransactionFoundException;
+import org.tihlde.Exceptions.PollingFailException;
+import org.tihlde.Exceptions.TransactionFailedException;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -31,22 +33,22 @@ public class BrokerImp extends UnicastRemoteObject implements Broker {
     }
 
     @Override
-    public void makeTransaction(Transaction transaction) throws NoTransactionFoundException, RemoteException {
-
-        for (Register r : registers) {
-            r.makeTransaction(transaction);
+    public void makeTransaction(Transaction transaction) throws TransactionFailedException, PollingFailException, RemoteException {
+        for(Register re : registers) {
+            if(re.ask()) {
+                throw new PollingFailException();
+            }
         }
+
         try {
-        } catch (Exception e) {
-
+            for (Register r : registers) {
+                r.makeTransaction(transaction);
+            }
+        } catch (TransactionFailedException tfe) {
+            rollback(transaction);
+            throw tfe;
         }
     }
-
-    @Override
-    public void makeFailedTransaction(Transaction transaction) throws NoTransactionFoundException, RemoteException {
-
-    }
-
 
     @Override
     public void rollback(Transaction transaction) throws RemoteException {
