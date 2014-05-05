@@ -15,14 +15,13 @@ import java.rmi.registry.Registry;
     Run two or more to get the Two Phase Commit effect.
  */
 
-public class Client extends Thread {
+public class DBinit extends Thread {
 
     @Override
     public void run() {
         try {
             String serverAddress = InetAddress.getLocalHost().toString();
-            Registry registry = LocateRegistry.getRegistry(12000);
-            System.out.println("Locate OK");
+            Registry registry = LocateRegistry.getRegistry(11000);
             Broker broker = (Broker) registry.lookup("Bank");
             System.out.println("Lookup on server: " + broker.getServerName() + " OK");
             broker.addRegistry(new RegisterImp());

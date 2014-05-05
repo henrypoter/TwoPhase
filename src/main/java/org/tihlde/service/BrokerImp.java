@@ -31,39 +31,42 @@ public class BrokerImp extends UnicastRemoteObject implements Broker {
     }
 
     @Override
-    public ArrayList<Register> getRegisters() throws RemoteException {
-        return registers;
-    }
-
-    @Override
     public void makeTransaction(Transaction transaction) throws NoTransactionFoundException, RemoteException {
 
         for (Register r : registers) {
             r.makeTransaction(transaction);
         }
         try {
-            checkVersion(transaction);
         } catch (Exception e) {
 
         }
     }
 
     @Override
-    public boolean checkVersion(Transaction transaction) throws NoTransactionFoundException, RemoteException {
-        for (Register r : registers) {
-            if (r.getById(transaction.getId()).getVersion() != transaction.getVersion()) {
-                rollback(transaction);
-                System.out.println("Rollback completed");
-                return false;
-            }
-        }
-        return true;
+    public void makeFailedTransaction(Transaction transaction) throws NoTransactionFoundException, RemoteException {
+
     }
+
 
     @Override
     public void rollback(Transaction transaction) throws RemoteException {
         for (Register r : registers) {
             r.rollback(transaction);
+        }
+    }
+
+    @Override
+    public double getBalance() {
+        return registers.get(0).getBalance();
+
+    }
+
+    @Override
+    public Transaction getTransaction(int id) {
+        try {
+            return registers.get(0).getTransaction(id);
+        } catch (NoTransactionFoundException no) {
+            return null;
         }
     }
 }

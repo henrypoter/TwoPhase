@@ -2,6 +2,7 @@ package org.tihlde.DB;
 
 import org.tihlde.DTO.Transaction;
 import org.tihlde.Exceptions.NoTransactionFoundException;
+import org.tihlde.Exceptions.TransactionFailedException;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -14,9 +15,10 @@ public interface Register extends Remote {
 
     boolean ask() throws RemoteException;
     void rollback(Transaction transaction) throws RemoteException;
-    int checkVersion() throws RemoteException;
     ArrayList<Transaction> getAll() throws RemoteException;
     Transaction getById(int id) throws NoTransactionFoundException, RemoteException;
     Transaction makeTransaction(Transaction transaction) throws RemoteException;
-
+    Transaction makeFailedTransaction(Transaction transaction) throws TransactionFailedException;
+    Transaction getTransaction(int id) throws NoTransactionFoundException;
+    double getBalance();
 }

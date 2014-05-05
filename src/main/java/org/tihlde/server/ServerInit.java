@@ -5,24 +5,20 @@ import org.tihlde.service.BrokerImp;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-/**
- * Created by kanin on 04.05.14.
- */
-public class Server extends Thread{
-
+public class ServerInit extends Thread {
 
     @Override
     public void run() {
         try {
-            final Registry registry = LocateRegistry.createRegistry(12000);
+            final Registry registry = LocateRegistry.createRegistry(11000);
             BrokerImp broker = new BrokerImp("Bank");
             registry.bind(broker.getServerName(), broker);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Server failed to initialize");
+            System.out.println("ServerInit failed to initialize");
             System.exit(0);
         }
-        System.out.println("Server running...");
+        System.out.println("ServerInit running...");
 
         boolean run = true;
 
@@ -38,6 +34,4 @@ public class Server extends Thread{
         System.exit(0);
 
     }
-
-
 }

@@ -2,6 +2,7 @@ package org.tihlde.DB;
 
 import org.tihlde.DTO.Transaction;
 import org.tihlde.Exceptions.NoTransactionFoundException;
+import org.tihlde.Exceptions.TransactionFailedException;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -29,11 +30,6 @@ public class RegisterImp extends UnicastRemoteObject implements Register {
     }
 
     @Override
-    public int checkVersion() throws RemoteException {
-        return bank.get(bank.size()).getId() ;
-    }
-
-    @Override
     public ArrayList<Transaction> getAll() {
         return bank;
     }
@@ -53,5 +49,20 @@ public class RegisterImp extends UnicastRemoteObject implements Register {
         bank.add(transaction);
         System.out.println("Transaction done.");
         return transaction;
+    }
+
+    @Override
+    public Transaction makeFailedTransaction(Transaction transaction) throws TransactionFailedException {
+        return null;
+    }
+
+    @Override
+    public Transaction getTransaction(int id) throws NoTransactionFoundException {
+        return null;
+    }
+
+    @Override
+    public double getBalance() {
+        return bank.get(bank.size() - 1).getBalance();
     }
 }

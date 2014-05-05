@@ -1,8 +1,11 @@
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.tihlde.Client;
 import org.tihlde.DTO.Transaction;
-import org.tihlde.server.Server;
+import org.tihlde.DBinit;
+import org.tihlde.Exceptions.TransactionFailedException;
+import org.tihlde.server.ServerInit;
 import org.tihlde.service.Broker;
 
 import java.net.InetAddress;
@@ -19,25 +22,30 @@ import java.util.ArrayList;
 public class TransactionTests {
 
     Broker broker;
-    int id;
+    int id = 0;
+    double balance = 0;
 
+    /**
+     * Set up broker server and 4 fictional database servers.
+     * @throws Exception
+     */
     @Before
     public void setUp() throws Exception {
-        ArrayList<Client> clients = new ArrayList<Client>();
-        Server server = new Server();
-        server.start();
+        ArrayList<DBinit> DBinits = new ArrayList<DBinit>();
+        ServerInit serverInit = new ServerInit();
+        serverInit.start();
 
-        Client register1 = new Client();
-        Client register2 = new Client();
-        Client register3 = new Client();
-        Client register4 = new Client();
+        DBinit register1 = new DBinit();
+        DBinit register2 = new DBinit();
+        DBinit register3 = new DBinit();
+        DBinit register4 = new DBinit();
 
-        clients.add(register1);
-        clients.add(register2);
-        clients.add(register3);
-        clients.add(register4);
+        DBinits.add(register1);
+        DBinits.add(register2);
+        DBinits.add(register3);
+        DBinits.add(register4);
 
-        for(Client c : clients) {
+        for(DBinit c : DBinits) {
             c.start();
             c.join();
         }
@@ -45,29 +53,56 @@ public class TransactionTests {
 
         try {
             String serverAddress = InetAddress.getLocalHost().toString();
-            Registry registry = LocateRegistry.getRegistry(12000);
+            Registry registry = LocateRegistry.getRegistry(11000);
             System.out.println("Locate OK");
             broker = (Broker) registry.lookup("Bank");
-            System.out.println("Lookup on server: " + broker.getServerName() + " OK");
+            System.out.println("Lookup on serverInit: " + broker.getServerName() + " OK");
             System.out.println("Connected");
         } catch (RemoteException re) {
             re.printStackTrace();
-            System.out.println("Register failed to connect");
+            System.out.println("Client failed to connect");
         }
     }
 
-
-    @Test
-    public void successfulTransaction() throws Exception {
-        Transaction newTrans = new Transaction();
-        newTrans.setId(id);
+    @After
+    public void after() {
         id++;
-        newTrans.setAmount(1000);
-        broker.makeTransaction(newTrans);
     }
 
-    @Test
-    public void failedTransaction() throws Exception() {
 
+    /**
+     * Should add a transactions successfully to both databases.
+     * @throws Exception
+     */
+    @Test
+    public void successfulTransaction() throws Exception {
+        double amount = 1000;
+        balance += amount;
+        Transaction newTrans = new Transaction();
+        newTrans.setId(id);
+        newTrans.setAmount(amount);
+        broker.makeTransaction(newTrans);
+        Transaction createdTrans = broker.getTransaction(id);
+        Assert.assertEquals(id, createdTrans.getId());
+        Assert.assertEquals(amount, createdTrans.getAmount());
+        Assert.assertEquals(balance, createdTrans.getBalance());
+
+
+    }
+
+    /**
+     * Should try to add transaction but fail, and then rollback all servers.
+     * @throws Exception
+     */
+    @Test(expected = TransactionFailedException.class)
+    public void failedTransaction() throws Exception {
+        double amount = 1500;
+        Transaction newTrans = new Transaction();
+        newTrans.setId(id);
+        newTrans.setAmount(amount);
+        broker.makeFailedTransaction(newTrans);
+        Assert.assertNull(broker.getTransaction(id));
+        double storedBalance = broker.getBalance();
+        Assert.assertEquals(balance, storedBalance);
     }
 }

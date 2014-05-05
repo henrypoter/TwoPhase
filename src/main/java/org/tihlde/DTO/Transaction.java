@@ -8,7 +8,6 @@ import java.io.Serializable;
 public class Transaction implements Serializable {
 
     private int id;
-    private int version;
     private double amount;
     private double balance;
 
@@ -18,14 +17,6 @@ public class Transaction implements Serializable {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
     }
 
     public double getAmount() {
