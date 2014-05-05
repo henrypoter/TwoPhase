@@ -22,9 +22,9 @@ public interface Broker extends Remote {
 
     void rollback(Transaction transaction) throws RemoteException;
 
-    double getBalance();
+    double getBalance() throws RemoteException;
 
-    Transaction getTransaction(int id);
+    Transaction getTransaction(int id) throws RemoteException, NoTransactionFoundException;
 
 
 

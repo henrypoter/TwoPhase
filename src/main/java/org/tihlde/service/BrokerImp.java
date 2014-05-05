@@ -56,13 +56,13 @@ public class BrokerImp extends UnicastRemoteObject implements Broker {
     }
 
     @Override
-    public double getBalance() {
+    public double getBalance() throws RemoteException {
         return registers.get(0).getBalance();
 
     }
 
     @Override
-    public Transaction getTransaction(int id) {
+    public Transaction getTransaction(int id) throws RemoteException {
         try {
             return registers.get(0).getTransaction(id);
         } catch (NoTransactionFoundException no) {

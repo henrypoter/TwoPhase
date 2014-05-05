@@ -1,7 +1,6 @@
 package org.tihlde.DB;
 
 import org.tihlde.DTO.Transaction;
-import org.tihlde.Exceptions.NoTransactionFoundException;
 import org.tihlde.Exceptions.TransactionFailedException;
 
 import java.rmi.RemoteException;
@@ -35,13 +34,13 @@ public class RegisterImp extends UnicastRemoteObject implements Register {
     }
 
     @Override
-    public Transaction getById(int id) throws NoTransactionFoundException {
+    public Transaction getById(int id) {
         for (Transaction t : bank) {
             if (t.getId() == id) {
                 return t;
             }
         }
-        throw new NoTransactionFoundException();
+        return null;
     }
 
     @Override
@@ -57,7 +56,12 @@ public class RegisterImp extends UnicastRemoteObject implements Register {
     }
 
     @Override
-    public Transaction getTransaction(int id) throws NoTransactionFoundException {
+    public Transaction getTransaction(int id) {
+        for(Transaction t : bank) {
+            if(t.getId() == t.getId()) {
+                return t;
+            }
+        }
         return null;
     }
 

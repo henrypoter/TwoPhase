@@ -33,8 +33,6 @@ public class TransactionTests {
     public void setUp() throws Exception {
         ArrayList<DBinit> DBinits = new ArrayList<DBinit>();
         ServerInit serverInit = new ServerInit();
-        serverInit.start();
-
         DBinit register1 = new DBinit();
         DBinit register2 = new DBinit();
         DBinit register3 = new DBinit();
@@ -42,9 +40,10 @@ public class TransactionTests {
 
         DBinits.add(register1);
         DBinits.add(register2);
-        DBinits.add(register3);
-        DBinits.add(register4);
+        //DBinits.add(register3);
+        //DBinits.add(register4);
 
+        serverInit.start();
         for(DBinit c : DBinits) {
             c.start();
             c.join();
@@ -86,7 +85,6 @@ public class TransactionTests {
         Assert.assertEquals(id, createdTrans.getId());
         Assert.assertEquals(amount, createdTrans.getAmount());
         Assert.assertEquals(balance, createdTrans.getBalance());
-
 
     }
 
